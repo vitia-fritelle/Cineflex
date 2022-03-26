@@ -16,8 +16,8 @@ export default () => {
                     {days?days.days.map(({weekday, date, showtimes, id}) => 
                         <li key={id}>
                             <header>{weekday} - {date}</header>
-                            {showtimes?showtimes.map(({name}) => 
-                              <Link to={`/sessao/${id}`}>{name}</Link>):''}
+                            {showtimes?showtimes.map(({name, id: sessionId}) => 
+                              <Link to={`/sessao/${sessionId}`}>{name}</Link>):''}
                         </li>
                     ):''}
                 </ul>
