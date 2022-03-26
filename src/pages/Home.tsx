@@ -8,7 +8,7 @@ export default () => {
         <main>
             <h3>Selecione o filme</h3>
             {movies.map(({posterURL,title, id}) => 
-                <Link to={String(id)}>
+                <Link to={`/filme/${id}`}>
                     <img key={id} src={posterURL} alt={title}/>
                 </Link>
             )}
