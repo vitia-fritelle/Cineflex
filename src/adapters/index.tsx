@@ -41,7 +41,7 @@ export const useMovieDays = (movieId: string) => {
     return [days];
 };
 
-export const useMovieSession = (sessionId: number) => {
+export const useMovieSession = (sessionId: string) => {
     
     const [session, setSession] = useState<MovieSession>();
 
