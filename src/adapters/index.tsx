@@ -7,51 +7,54 @@ const myAxios = axios.create({
     baseURL: 'https://mock-api.driven.com.br/api/v5/cineflex/'
 });
 
-export const useMovies = (): [
-    Array<Movie>, (movies: Array<Movie>) => void
-] => {
-    const [movies, setMovies]: [
-        Array<Movie>, (movies: Array<Movie>) => void
-    ] = useState(Array(0));
-    useEffect(() => {
-        (async () => setMovies((await myAxios.get('movies')).data))();
-    })
+export const useMovies = () => {
 
-    return [movies, setMovies];
+    const [movies, setMovies] = useState<Array<Movie>>();
+
+    useEffect(() => {
+        
+        (async () => {
+            const {data}: {
+                data: Array<Movie>
+            } = await myAxios.get('movies');
+            setMovies(data);
+        })();
+    },[]);
+
+    return [movies];
 };
 
-export const useMovieDays = (movieId: number): [
-    MovieDays, (days: MovieDays) => void
-] => {
+export const useMovieDays = (movieId: string) => {
     
-    const [days, setDays]: [
-        MovieDays, (days: MovieDays) => void
-    ] = useState(Object());
+    const [days, setDays] = useState<MovieDays>();
     
     useEffect(() => {
+
         (async () => {
-            setDays((await myAxios.get(`movies/${movieId}/showtimes`)).data);
+            const {data}: {
+                data: MovieDays
+            } = await myAxios.get(`movies/${movieId}/showtimes`);
+            setDays(data);
         })();
-    });
-
-    return [days, setDays];
-}
-
-export const useMovieSession = (sessionId: number): [
-    MovieSession, (session: MovieSession) => void
-] => {
+    },[]);
     
-    const [session, setSession]: [
-        MovieSession, (session: MovieSession) => void
-    ] = useState(Object());
+    return [days];
+};
+
+export const useMovieSession = (sessionId: number) => {
+    
+    const [session, setSession] = useState<MovieSession>();
 
     useEffect(() => {
         (async () => {
-            setSession((await myAxios.get(`showtimes/${sessionId}/seats`)).data);
+            const {data}: {
+                data: MovieSession
+            } = await myAxios.get(`showtimes/${sessionId}/seats`);
+            setSession(data);
         })();
-    });
+    },[]);
     
-    return [session, setSession];
+    return [session];
 }
 
 export const reserveSeats = async (
@@ -64,7 +67,7 @@ export const reserveSeats = async (
         cpf
     };
 
-    const {data} = await axios.post('seats/book-many', objeto);
+    const {data} = await myAxios.post('seats/book-many', objeto);
 
     return data
 }
