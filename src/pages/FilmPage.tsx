@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useMovieDays } from "../adapters";
+import { Link } from "react-router-dom";
 
 export default () => {
     
@@ -15,7 +16,8 @@ export default () => {
                     {days?days.days.map(({weekday, date, showtimes, id}) => 
                         <li key={id}>
                             <header>{weekday} - {date}</header>
-                            {showtimes?showtimes.map(({name}) => name):''}
+                            {showtimes?showtimes.map(({name}) => 
+                              <Link to={`/sessao/${id}`}>{name}</Link>):''}
                         </li>
                     ):''}
                 </ul>
