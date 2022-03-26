@@ -7,11 +7,11 @@ export default () => {
     return (
         <main>
             <h3>Selecione o filme</h3>
-            {movies.map(({posterURL,title, id}) => 
-                <Link to={`/filme/${id}`}>
-                    <img key={id} src={posterURL} alt={title}/>
+            {movies?movies.map(({posterURL,title, id}) => 
+                <Link key={id} to={`/filme/${id}`}>
+                    <img  src={posterURL} alt={title}/>
                 </Link>
-            )}
+            ):''}
         </main>
     );
     
