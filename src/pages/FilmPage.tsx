@@ -20,7 +20,7 @@ export default () => {
                                 <header>{weekday} - {date}</header>
                                 {showtimes
                                 ?showtimes.map(({name, id: sessionId}) => 
-                                <Link to={`/sessao/${sessionId}`}>{name}</Link>)
+                                <Link key={sessionId} to={`/sessao/${sessionId}`}>{name}</Link>)
                                 :''}
                             </li>
                         ):''}
