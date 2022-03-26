@@ -7,6 +7,7 @@ import Success from "./pages/Success";
 export default () => {
     return (
         <BrowserRouter>
+            <header>CINEFLEX</header>
             <Routes>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/filme/:idFilme" element={<FilmPage/>}/>
