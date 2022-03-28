@@ -65,3 +65,12 @@ export type MovieState = [
     Array<Movie>, 
     (movies: Array<Movie>) => void
 ];
+
+export type LocationState = {
+    chairs: Array<number>,
+    customer: string,
+    cpf: string,
+    name: string,
+    date: string,
+    title: string
+}
