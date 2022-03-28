@@ -1,14 +1,41 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { useMovieSession } from "../adapters";
+import { useParams, useNavigate } from "react-router-dom";
+import { reserveSeats, useMovieSession } from "../adapters";
 import { MovieSession } from "../types";
 
 export default () => {
     
     const {idSessao} = useParams();
-    
+    const [chairs, setChairs] = useState<Array<number>>([]);
+    const [customer, setCustomer] = useState<string>('');
+    const [cpf, setCpf] = useState<string>('');
+    const browse = useNavigate();
+
     if(idSessao) {
         const [session] = useMovieSession(idSessao);
+
+        const enviarDados = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+            e.preventDefault();
+            const response = await reserveSeats(chairs, customer, cpf);
+            if(response === 'OK!' && session){
+                const {name} = session;
+                const {date} = session.day;
+                const {title} = session.movie;
+                browse('/sucesso',{
+                    state: {
+                        chairs,
+                        customer,
+                        cpf,
+                        name,
+                        date,
+                        title
+                    },
+                    replace: false
+                });
+            } else {
+                alert('Deu algo errado :(');
+            }
+        }
 
         return (
             <>
@@ -16,7 +43,11 @@ export default () => {
                     <h3>Selecione o(s) assento(s)</h3>
                     <ul>
                         {session?session.seats.map(({name, isAvailable, id}) => {
-                            return <Seat key={id} name={name}/>;
+                            return <Seat key={id} 
+                                         name={name} 
+                                         id={id} 
+                                         setChairs={setChairs}
+                                         chairs={chairs}/>;
                         }):''}
                     </ul>
                     <ul>
@@ -25,12 +56,19 @@ export default () => {
                         <li>Indisponível</li>
                     </ul>
 
-                    <form action="/success" method="post">
+                    <form onSubmit={enviarDados} 
+                          method="post">
                         Nome do comprador:
-                        <input type="text" name="" id="" placeholder="Digite seu nome..."/>
+                        <input type="text" 
+                               onChange={(e) => setCustomer(e.target.value)} 
+                               value={customer} 
+                               placeholder="Digite seu nome..." required/>
                         CPF do comprador:
-                        <input type="text" name="" id="" placeholder="Digite seu CPF..."/>
-                        <button>Reservar assento(s)</button>
+                        <input type="text" 
+                               onChange={(e) => setCpf(e.target.value)} 
+                               value={cpf} 
+                               placeholder="Digite seu CPF..." required/>
+                        <button type="submit">Reservar assento(s)</button>
                     </form>
                 </main>
                 {session?<Footer session={session}/>:''}
@@ -41,13 +79,27 @@ export default () => {
     }
 };
 
-const Seat = ({name}: {name: string}) => {
+const Seat = ({name, id, chairs, setChairs}: {
+    name: string, 
+    id: number, 
+    chairs: Array<number>, 
+    setChairs: (chair: Array<number>) => void
+}) => {
 
-    const [selected, setSelected] = useState<Boolean>(false);
+    const [selected, setSelected] = useState<boolean>(false);
+
+    const HandleChairs = () => {
+        if(selected) {
+            setChairs(chairs.filter(chair => chair !== id));
+        } else{
+            setChairs([...chairs,id]);
+        }
+        setSelected(!selected);
+    }
 
     return (
-        <li className={`${selected?"selected":"available"}`}
-            onClick={() => null}>
+        <li className={selected?"selected":"available"}
+            onClick={HandleChairs}>
             {name}
         </li>
     );
@@ -64,8 +116,8 @@ const Footer = ({session}: {session: MovieSession}) => {
             <figure>
                 <img src={posterURL} alt={overview}/>
                 <figcaption>
-                        <h4>{title}</h4>
-                        {weekday} - {name}
+                    <h4>{title}</h4>
+                    {weekday} - {name}
                 </figcaption>
             </figure>
         </footer>
