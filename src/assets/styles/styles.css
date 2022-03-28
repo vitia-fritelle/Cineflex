@@ -12,4 +12,6 @@
     --fonte_branca: #ffffff;
     --sucesso: #247A6B;
     font-family: 'Roboto', sans-serif;
+    text-decoration: none;
+    list-style: none;
 }
