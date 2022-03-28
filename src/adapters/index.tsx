@@ -59,7 +59,7 @@ export const useMovieSession = (sessionId: string) => {
 
 export const reserveSeats = async (
     ids: Array<number>, name: string, cpf: string
-) => {
+): Promise<string> => {
     
     const objeto = {
         ids,
@@ -69,5 +69,5 @@ export const reserveSeats = async (
 
     const {data} = await myAxios.post('seats/book-many', objeto);
 
-    return data
+    return data;
 }
