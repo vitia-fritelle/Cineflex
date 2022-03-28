@@ -7,6 +7,7 @@ export default () => {
     
     const {idSessao} = useParams();
     const [chairs, setChairs] = useState<Array<number>>([]);
+    const [disabledChairs, setDisabledChairs] = useState<Array<number>>([]);
     const [customer, setCustomer] = useState<string>('');
     const [cpf, setCpf] = useState<string>('');
     const browse = useNavigate();
@@ -32,6 +33,10 @@ export default () => {
                     },
                     replace: false
                 });
+                setDisabledChairs([...disabledChairs,...chairs]);
+                setChairs([]);
+                setCustomer('');
+                setCpf('');
             } else {
                 alert('Deu algo errado :(');
             }
@@ -44,10 +49,12 @@ export default () => {
                     <ul>
                         {session?session.seats.map(({name, isAvailable, id}) => {
                             return <Seat key={id} 
-                                         name={name} 
-                                         id={id} 
-                                         setChairs={setChairs}
-                                         chairs={chairs}/>;
+                            name={name} 
+                            id={id} 
+                            disabled={disabledChairs.includes(id)}
+                            setChairs={setChairs}
+                            chairs={chairs}/>;
+                            
                         }):''}
                     </ul>
                     <ul>
@@ -79,9 +86,10 @@ export default () => {
     }
 };
 
-const Seat = ({name, id, chairs, setChairs}: {
+const Seat = ({name, id, disabled, chairs, setChairs}: {
     name: string, 
     id: number, 
+    disabled: boolean,
     chairs: Array<number>, 
     setChairs: (chair: Array<number>) => void
 }) => {
@@ -96,13 +104,22 @@ const Seat = ({name, id, chairs, setChairs}: {
         }
         setSelected(!selected);
     }
-
-    return (
-        <li className={selected?"selected":"available"}
-            onClick={HandleChairs}>
-            {name}
-        </li>
-    );
+    if(!disabled) {
+        return (
+            <li className={selected?"selected":"available"}
+                onClick={HandleChairs}>
+                {name}
+            </li>
+        );
+    } else {
+        return (
+            <li className='disabled'
+                onClick={HandleChairs}>
+                {name}
+            </li>
+        );
+    }
+    
 };
 
 const Footer = ({session}: {session: MovieSession}) => {
