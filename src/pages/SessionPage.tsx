@@ -23,6 +23,7 @@ export default () => {
                 const {name} = session;
                 const {date} = session.day;
                 const {title} = session.movie;
+                setDisabledChairs([...disabledChairs,...chairs]);
                 browse('/sucesso',{
                     state: {
                         chairs,
@@ -34,10 +35,6 @@ export default () => {
                     },
                     replace: false
                 });
-                setDisabledChairs([...disabledChairs,...chairs]);
-                setChairs([]);
-                setCustomer('');
-                setCpf('');
             } else {
                 alert('Deu algo errado :(');
             }
@@ -107,7 +104,7 @@ const Seat = ({name, id, disabled, chairs, setChairs}: {
         }
         setSelected(!selected);
     }
-    
+
     if(!disabled) {
         return (
             <li className={selected?"selected":"available"}
